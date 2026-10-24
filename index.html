@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f4c5c">
+<title>সরকারি পেনশন ক্যালকুলেটর — হিসাবপাতা</title>
+<meta name="description" content="নতুন জাতীয় বেতনস্কেল ২০২৬ অনুযায়ী সরকারি পেনশন, আনুতোষিক, ছুটি নগদায়ন ও পুনর্নির্ধারিত নিট পেনশনের সহজ বাংলা ক্যালকুলেটর।">
+<style>
+
+/* ======================================================================
+   হিসাবপাতা থিম — ড্যাশবোর্ডের সাথে একই রং, ফন্ট, হেডার ও ফুটার।
+   (এটি শুধু চেহারা বদলায়; ক্যালকুলেটরের কোনো হিসাব/ফাংশন বদলায় না।)
+   ====================================================================== */
+:root{--hp-primary:#0f766e;--hp-dark:#0f4c5c;--hp-soft:#e3f4f1;--hp-ink:#1b2f3d;--hp-muted:#55687a;--hp-line:#dde6ec;--hp-page:#f2f6f8}
+
+.hp-header{background:linear-gradient(120deg,#0f766e,#164e63);color:#fff;padding:16px}
+.hp-header-inner{width:min(1120px,100%);margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 12px}
+.hp-brand{display:flex;align-items:center;gap:11px;color:#fff;text-decoration:none;min-width:0}
+.hp-mark{flex:0 0 auto;width:44px;height:44px;display:grid;place-items:center;border-radius:14px;background:rgba(255,255,255,.17);border:1px solid rgba(255,255,255,.22);font-size:24px;font-weight:700;line-height:1}
+.hp-name{display:block;font-size:23px;font-weight:800;letter-spacing:-.3px;line-height:1.25}
+.hp-tag{display:block;font-size:12px;opacity:.85;line-height:1.3}
+.hp-pill{flex:0 1 auto;font-size:13px;padding:8px 12px;border:1px solid rgba(255,255,255,.3);border-radius:999px;white-space:nowrap}
+.hp-footer{background:#102d3b;color:#d7e4e9;padding:22px 16px;font-size:13px;line-height:1.6}
+.hp-footer-inner{width:min(1120px,100%);margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:14px}
+.hp-footer strong{color:#fff}
+.hp-note{color:#a9c0ca}
+.hp-center{text-align:center}
+.hp-sub{font-size:12px;color:#a9c0ca;margin-top:2px}
+@media (max-width:650px){.hp-footer-inner{flex-direction:column;text-align:center;gap:4px}}
+@media (max-width:560px){.hp-name{font-size:20px}.hp-mark{width:40px;height:40px;font-size:22px}.hp-pill{font-size:12px;padding:7px 10px}}
+@media (max-width:380px){.hp-pill{font-size:11px;padding:6px 9px}}
+
+
+/* ===== পেজের নিজস্ব স্টাইল (হিসাবপাতা থিম) ===== */
+:root{--primary-color:#0f766e;--primary-hover:#0b5f58;--primary-dark:#0f4c5c;--bg-color:#f2f6f8;--card-bg:#ffffff;
+      --text-main:#1b2f3d;--text-muted:#55687a;--border-color:#dde6ec;--hero-bg:#e3f4f1}
+*{box-sizing:border-box}
+html{background:var(--bg-color);-webkit-text-size-adjust:100%}
+body{margin:0;padding:0;min-height:100vh;background:var(--bg-color);color:var(--text-main);line-height:1.6;
+     font-family:'Noto Sans Bengali','Hind Siliguri',Kalpurush,SolaimanLipi,'Nirmala UI','Vrinda',Arial,sans-serif}
+button,input,select{font-family:inherit}
+:focus-visible{outline:3px solid #2f7de1;outline-offset:2px}
+.app-wrapper{max-width:700px;margin:22px auto;padding:0 14px}
+
+.top-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.top-btn{display:inline-flex;align-items:center;gap:6px;min-height:42px;padding:8px 16px;border-radius:999px;
+         border:1px solid #cfeae5;background:var(--hero-bg);color:var(--primary-dark);font-size:14px;font-weight:700;
+         cursor:pointer;text-decoration:none;line-height:1.2}
+.top-btn:hover{background:#cfeae5}
+
+.header-section{text-align:center;margin-bottom:22px}
+.header-section h1{font-size:1.65rem;color:var(--primary-dark);margin:0 0 6px;line-height:1.35}
+.header-section p{color:var(--text-muted);font-size:.95rem;margin:0}
+
+.card-box{background:var(--card-bg);border:1px solid var(--border-color);border-radius:16px;padding:20px;margin-bottom:20px;
+          box-shadow:0 10px 30px rgba(20,48,60,.08)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+@media (max-width:550px){.form-grid{grid-template-columns:1fr}}
+.input-group{margin-bottom:15px}
+label{display:block;font-weight:600;margin-bottom:6px;font-size:.95rem}
+label small{font-weight:normal;color:var(--text-muted)}
+input,select{width:100%;padding:10px 12px;font-size:1rem;border:1px solid var(--border-color);border-radius:10px;background:#fff;
+             color:var(--text-main);outline:none;transition:border-color .2s;min-height:44px}
+input:focus,select:focus{border-color:var(--primary-color);box-shadow:0 0 0 3px rgba(15,118,110,.15)}
+.hint{color:var(--text-muted);display:block;margin-top:-10px;margin-bottom:15px;font-size:.85rem}
+
+.calc-btn{width:100%;padding:12px;font-size:1.05rem;font-weight:700;background:var(--primary-color);color:#fff;border:none;
+          border-radius:10px;cursor:pointer;transition:background .2s;margin-top:10px;min-height:48px}
+.calc-btn:hover{background:var(--primary-hover)}
+.calc-btn.secondary{background:var(--hero-bg);color:var(--primary-dark);border:1px solid #cfeae5}
+.calc-btn.secondary:hover{background:#cfeae5}
+
+.highlight-banner{background:var(--hero-bg);color:var(--primary-dark);border-radius:12px;padding:15px;margin-bottom:15px;text-align:center}
+.highlight-banner.banner-lump{background:#e8f1fb;color:#164e63}
+.highlight-banner span{display:block;font-size:.9rem;font-weight:600}
+.highlight-banner strong{font-size:1.6rem;display:block;margin-top:5px}
+.detail-row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px dashed var(--border-color);font-size:.95rem}
+.detail-row:last-child{border-bottom:none}
+.detail-row span:first-child{color:var(--text-muted)}
+.detail-row span:last-child{font-weight:700;text-align:right}
+.detail-row.row-total{border-top:2px solid var(--border-color);font-weight:700;background:#f4f9f8;padding:12px 8px}
+#resultContainer{display:none}
+
+.notice{margin-top:4px;padding:14px 16px;border-radius:14px;background:#eaf3fb;border:1px solid #cfe1f2;color:#274a67;font-size:14px}
+.notice strong{color:#163a57}
+
+/* ===== প্রিন্ট শিট: স্ক্রিনে লুকানো, শুধু প্রিন্টে (A4) ===== */
+#printSheet{display:none}
+@media print{
+  @page{size:A4;margin:10mm}
+  html,body{background:#fff!important;color:#000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .hp-header,.hp-footer,.app-wrapper{display:none!important}
+  #printSheet{display:block!important;font-size:12px;line-height:1.5}
+  #printSheet .prep{text-align:center;border:2px solid #0f766e;background:#e3f4f1!important;border-radius:8px;padding:8px;margin-bottom:10px;font-size:13px;line-height:1.5;color:#0f4c5c}
+  #printSheet .prep b{font-size:15px}
+  #printSheet h2{text-align:center;font-size:18px;margin:6px 0 2px;color:#0f4c5c}
+  #printSheet .sum{text-align:center;font-size:12px;margin:0 0 8px;color:#334155}
+  #printSheet h3{font-size:14px;margin:12px 0 6px;color:#0f4c5c;border-bottom:1.5px solid #0f766e;padding-bottom:3px}
+  #printSheet table{width:100%;border-collapse:collapse;font-size:12px}
+  #printSheet td{padding:4px 8px;border-top:1px solid #cbd5e1;vertical-align:top}
+  #printSheet tr:first-child td{border-top:0}
+  #printSheet td:last-child{text-align:right;font-weight:700;white-space:nowrap}
+  #printSheet tr.tot td{background:#f1f5f9!important;border-top:2px solid #94a3b8;font-weight:700}
+  #printSheet .bigs{display:flex;gap:8px;margin:8px 0}
+  #printSheet .big{flex:1;text-align:center;padding:8px;border-radius:8px;background:#0f766e!important;color:#fff!important}
+  #printSheet .big.lump{background:#164e63!important}
+  #printSheet .big small{display:block;font-size:11px;opacity:.95}
+  #printSheet .big b{display:block;font-size:20px;line-height:1.3}
+  #printSheet .foot{margin-top:12px;font-size:11px;text-align:center;color:#475569;line-height:1.6}
+}
+
+</style>
+</head>
+<body>
+<header class="hp-header">
+  <div class="hp-header-inner">
+    <a class="hp-brand" href="https://manik-rmch.github.io/dashboard/" aria-label="হিসাবপাতা — ড্যাশবোর্ডে ফিরুন">
+      <span class="hp-mark" aria-hidden="true">হি</span>
+      <span><span class="hp-name">হিসাবপাতা</span><span class="hp-tag">বাংলা স্মার্ট টুলস</span></span>
+    </a>
+    <span class="hp-pill">সহজ হিসাব • এক জায়গায়</span>
+  </div>
+</header>
+
+<div class="app-wrapper">
+    <div class="top-bar">
+        <a class="top-btn" href="https://manik-rmch.github.io/dashboard/">🏠 হোম</a>
+        <button type="button" class="top-btn" onclick="resetCalculator()">↺ রিসেট</button>
+        <button type="button" class="top-btn" onclick="printResult()">🖨️ প্রিন্ট (A4)</button>
+    </div>
+
+    <div class="header-section">
+        <h1>সরকারি পেনশন ক্যালকুলেটর</h1>
+        <p>নতুন প্রজ্ঞাপন ও স্ল্যাবভিত্তিক পেনশন হিসাব</p>
+    </div>
+
+    <div class="card-box">
+        <div class="input-group">
+            <label for="pensionerType">পেনশনারের ধরন নির্বাচন করুন</label>
+            <select id="pensionerType" onchange="togglePensionerFields()">
+                <option value="new">নতুন বা পিআরএল-এ গমনকারী পেনশনার</option>
+                <option value="old">পুরাতন পেনশনারদের পেনশন পুনর্নির্ধারণ</option>
+            </select>
+        </div>
+
+        <!-- নতুন পেনশনার ফিল্ড -->
+        <div id="newPensionerSection">
+            <div class="form-grid">
+                <div class="input-group">
+                    <label for="basePayJune2026">৩০ জুন ২০২৬ অনুযায়ী মূল বেতন (টাকা)</label>
+                    <input type="number" id="basePayJune2026" value="" placeholder="যেমন: ৩৮৬১৫">
+                </div>
+                <div class="input-group">
+                    <label for="finalBasicWithIncrement">ইনক্রিমেন্ট সহ শেষ আহরিত মূল বেতন (টাকা)</label>
+                    <input type="number" id="finalBasicWithIncrement" value="" placeholder="যেমন: ৪০৫৫০">
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="input-group">
+                    <label for="leaveMonths">পাওনা ছুটি (মাস) <small>সর্বোচ্চ ১৮</small></label>
+                    <input type="number" id="leaveMonths" value="" max="18" min="0" placeholder="যেমন: ১৮">
+                </div>
+                <div class="input-group">
+                    <label for="serviceYears">পেনশনযোগ্য চাকরিকাল (বছর)</label>
+                    <input type="number" id="serviceYears" value="" min="5" max="40" placeholder="যেমন: ২৫">
+                </div>
+            </div>
+            <small class="hint">* সর্বনিম্ন ৫ বছর এবং ২৫ বা তার বেশি বছরে সর্বোচ্চ ৯০% হার কার্যকর হবে।</small>
+        </div>
+
+        <!-- পুরাতন পেনশনার পুনর্নির্ধারণ ফিল্ড -->
+        <div id="oldPensionerSection" style="display: none;">
+            <div class="input-group">
+                <label for="currentNetPension">৩০ জুন ২০২৬ তারিখের নিট পেনশন (টাকা)</label>
+                <input type="number" id="currentNetPension" value="" placeholder="যেমন: ৮০০০">
+            </div>
+            <div class="input-group">
+                <label for="implementationPhase">বাস্তবায়নের ধাপ</label>
+                <select id="implementationPhase">
+                    <option value="p1">১ম ধাপ (১ জুলাই ২০২৬ - ৩১ ডিসেম্বর ২০২৬)</option>
+                    <option value="p2">২য় ধাপ (১ জানুয়ারি ২০২৭ - ৩০ জুন ২০২৭)</option>
+                    <option value="full">৩য় বা পূর্ণাঙ্গ ধাপ (১ জুলাই ২০২৭ থেকে)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-grid">
+            <div class="input-group">
+                <label for="empAge">বর্তমান বয়স (বছর)</label>
+                <input type="number" id="empAge" value="" min="20" max="100" placeholder="যেমন: ৬৫">
+            </div>
+            <div class="input-group">
+                <label for="allowanceType">ভাতার কার্যকরের সময়সীমা</label>
+                <select id="allowanceType">
+                    <option value="current">প্রথম ধাপ: ৩১ ডিসেম্বর ২০২৭ পর্যন্ত</option>
+                    <option value="new">দ্বিতীয় ধাপ: ১ জানুয়ারি ২০২৮ থেকে নতুন হার</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="calc-btn" onclick="executeCalculation()">হিসাব করুন</button>
+    </div>
+
+    <div class="card-box" id="resultContainer">
+        <div class="highlight-banner">
+            <span>মাসিক পেনশন (চিকিৎসা ভাতাসহ)</span>
+            <strong id="resMonthlyTotal">৳ ০</strong>
+        </div>
+
+        <div class="highlight-banner banner-lump" id="lumpSumBanner">
+            <span>অবসরে মোট এককালীন প্রাপ্তি (আনুতোষিক + ছুটি নগদায়ন)</span>
+            <strong id="resLumpSumTotal">৳ ০</strong>
+        </div>
+
+        <div class="detail-row" id="rowGrossPension">
+            <span>মোট (গ্রস) পেনশন (<span id="resSlabText">৯০</span>%)</span>
+            <span id="resGrossPension">৳ ০</span>
+        </div>
+        <div class="detail-row">
+            <span id="labelNetMonthly">মাসিক নিট পেনশন</span>
+            <span id="resNetMonthly">৳ ০</span>
+        </div>
+        <div class="detail-row">
+            <span>মাসিক চিকিৎসা ভাতা</span>
+            <span id="resMedical">৳ ০</span>
+        </div>
+        <div class="detail-row" id="rowGratuity">
+            <span>এককালীন আনুতোষিক / গ্র্যাচুইটি</span>
+            <span id="resGratuity">৳ ০</span>
+        </div>
+        <div class="detail-row" id="rowLeaveCash">
+            <span>ছুটি নগদায়ন অর্থ</span>
+            <span id="resLeaveCash">৳ ০</span>
+        </div>
+        <div class="detail-row">
+            <span>উৎসব ভাতা (প্রতিটি, বছরে ২টি)</span>
+            <span id="resFestival">৳ ০</span>
+        </div>
+        <div class="detail-row">
+            <span id="resNewYearLabel">বাংলা নববর্ষ ভাতা (২০%)</span>
+            <span id="resNewYear">৳ ০</span>
+        </div>
+        <div class="detail-row row-total">
+            <span>বার্ষিক মোট পেনশন আয়</span>
+            <span id="resAnnualTotal">৳ ০</span>
+        </div>
+
+        <button type="button" class="calc-btn secondary" onclick="printResult()">🖨️ ফলাফল প্রিন্ট করুন (A4)</button>
+    </div>
+
+    <div class="notice"><strong>একটি নোট:</strong> এটি সহায়ক হিসাব, অফিসিয়াল পেনশন নির্ধারণ নয়। চূড়ান্ত পেনশন সংশ্লিষ্ট হিসাব রক্ষণ কার্যালয়ের নির্ধারণ অনুযায়ী হবে। গুরুত্বপূর্ণ সিদ্ধান্তের আগে মূল সরকারি প্রজ্ঞাপন যাচাই করুন।</div>
+</div>
+
+<div id="printSheet"></div>
+
+<footer class="hp-footer">
+  <div class="hp-footer-inner">
+    <div><strong>হিসাবপাতা</strong> · বাংলা স্মার্ট টুলস</div>
+    <div class="hp-center">
+      <div>পরিকল্পনা ও প্রস্তুতিতে: মোঃ মানিক</div>
+      <div class="hp-sub">গাড়ি চালক, রাজশাহী মেডিকেল কলেজ হাসপাতাল, রাজশাহী। মোবাইলঃ ০১৭২৯-৮১৫২৯১</div>
+    </div>
+    <div class="hp-note">সহজ হিসাব, সবার জন্য</div>
+  </div>
+</footer>
+
+<script>
+function togglePensionerFields() {
+    let type = document.getElementById('pensionerType').value;
+    let newSec = document.getElementById('newPensionerSection');
+    let oldSec = document.getElementById('oldPensionerSection');
+    let lumpSumBanner = document.getElementById('lumpSumBanner');
+    let rowGross = document.getElementById('rowGrossPension');
+    let rowGratuity = document.getElementById('rowGratuity');
+    let rowLeaveCash = document.getElementById('rowLeaveCash');
+
+    if (type === 'old') {
+        newSec.style.display = 'none';
+        oldSec.style.display = 'block';
+        lumpSumBanner.style.display = 'none';
+        rowGross.style.display = 'none';
+        rowGratuity.style.display = 'none';
+        rowLeaveCash.style.display = 'none';
+    } else {
+        newSec.style.display = 'block';
+        oldSec.style.display = 'none';
+        lumpSumBanner.style.display = 'block';
+        rowGross.style.display = 'flex';
+        rowGratuity.style.display = 'flex';
+        rowLeaveCash.style.display = 'flex';
+    }
+}
+
+function executeCalculation() {
+    let pensionerType = document.getElementById('pensionerType').value;
+    let age = parseInt(document.getElementById('empAge').value);
+    let allowanceType = document.getElementById('allowanceType').value;
+
+    if (isNaN(age)) {
+        alert("দয়া করে বর্তমান বয়স ইনপুট দিন।");
+        return;
+    }
+
+    let netMonthlyPension = 0;
+    let grossPension = 0;
+    let gratuityAmount = 0;
+    let leaveEncashment = 0;
+    let totalLumpSum = 0;
+    let percentage = 0;
+    let reFixRateText = "";
+    let frozenNetJune2026 = 0;   // সংশোধন: ৩০ জুন ২০২৬-এর অঙ্কের নিট পেনশন (৩১ ডিসেম্বর ২০২৭ পর্যন্ত উৎসব/নববর্ষ ভাতার ভিত্তি)
+
+    if (pensionerType === 'new') {
+        let basePayJune2026 = parseFloat(document.getElementById('basePayJune2026').value);
+        let finalBasicWithIncrement = parseFloat(document.getElementById('finalBasicWithIncrement').value);
+        let leaveMonths = parseFloat(document.getElementById('leaveMonths').value);
+        let years = parseInt(document.getElementById('serviceYears').value);
+
+        if (isNaN(basePayJune2026) || isNaN(finalBasicWithIncrement) || isNaN(leaveMonths) || isNaN(years)) {
+            alert("নতুন পেনশনারের জন্য সকল বেতন ও চাকরিকালের ঘরগুলো পূরণ করুন।");
+            return;
+        }
+
+        if(leaveMonths > 18) leaveMonths = 18;
+
+        if (years < 5) {
+            alert("পেনশন পাওয়ার জন্য সর্বনিম্ন ৫ বছর চাকরিকাল হতে হবে।");
+            return;
+        }
+
+        let rateMap = {
+            5: 21, 6: 24, 7: 27, 8: 30, 9: 33, 
+            10: 36, 11: 39, 12: 43, 13: 47, 14: 51, 
+            15: 54, 16: 57, 17: 63, 18: 65, 19: 69, 
+            20: 72, 21: 75, 22: 79, 23: 83, 24: 87
+        };
+
+        percentage = (years < 25) ? (rateMap[years] || 21) : 90;
+
+        let gratuityMultiplier = 230;
+        if (years >= 5 && years <= 9) gratuityMultiplier = 265;
+        else if (years >= 10 && years <= 14) gratuityMultiplier = 260;
+        else if (years >= 15 && years <= 19) gratuityMultiplier = 245;
+
+        grossPension = (finalBasicWithIncrement * percentage) / 100;
+        netMonthlyPension = grossPension / 2;
+
+        gratuityAmount = netMonthlyPension * gratuityMultiplier;
+        leaveEncashment = finalBasicWithIncrement * leaveMonths;
+        totalLumpSum = gratuityAmount + leaveEncashment;
+        // সংশোধন: ৩০ জুন ২০২৬ তারিখের মূল বেতনে (একই চাকরিকাল ও একই পেনশন-হারে) নিট পেনশন কত হতো
+        frozenNetJune2026 = ((basePayJune2026 * percentage) / 100) / 2;
+        document.getElementById('labelNetMonthly').innerText = "মাসিক নিট পেনশন (৫০% অংশ)";
+    } else {
+        let currentNet = parseFloat(document.getElementById('currentNetPension').value);
+        let phase = document.getElementById('implementationPhase').value;
+
+        if (isNaN(currentNet)) {
+            alert("দয়া করে ৩০ জুন ২০২৬ তারিখের নিট পেনশন ইনপুট দিন।");
+            return;
+        }
+        
+        frozenNetJune2026 = currentNet;   // সংশোধন: ৩০ জুন ২০২৬ তারিখের নিট পেনশনই স্থির অঙ্ক
+        let increasePercent = 0;
+        let minBound = 0;
+        let maxBound = 0;
+
+        if (currentNet <= 9000) {
+            increasePercent = 100;
+            minBound = 10000;
+            maxBound = 18000;
+        } else if (currentNet <= 20000) {
+            increasePercent = 75;
+            minBound = 18001;     // সংশোধন: গেজেট সারণি (অনুচ্ছেদ ৮(১)(খ)) — ন্যূনতম নিট পেনশন
+            maxBound = 35000;
+        } else if (currentNet <= 30000) {
+            increasePercent = 65;
+            minBound = 35001;     // সংশোধন
+            maxBound = 49000;     // সংশোধন (আগে ৪৯,৫০০)
+        } else if (currentNet <= 40000) {   // সংশোধন: ৩০,০০১–৪০,০০০ = ৬০% (আগে ৫০,০০০ পর্যন্ত ধরা ছিল)
+            increasePercent = 60;
+            minBound = 49001;     // সংশোধন
+            maxBound = 62000;     // সংশোধন (আগে ৬৫,০০০)
+        } else {
+            increasePercent = 55;
+            minBound = 62001;     // সংশোধন (আগে ৬১,০০১)
+            maxBound = 70200;
+        }
+
+        reFixRateText = increasePercent.toLocaleString('bn-BD') + "%";
+
+        let fullRefixedNet = currentNet * (1 + (increasePercent / 100));
+
+        if (fullRefixedNet < minBound) fullRefixedNet = minBound;
+        if (fullRefixedNet > maxBound) fullRefixedNet = maxBound;
+        if (fullRefixedNet > 70200) fullRefixedNet = 70200;
+
+        let totalIncreaseAmount = fullRefixedNet - currentNet;
+        // সংশোধন: গেজেটের শর্ত — ৭০,২০০ টাকার বেশি নিট পেনশনভোগী ১ জুলাই ২০২৭-এর আগ পর্যন্ত বিদ্যমান নিট পেনশনই পাবেন (কমবে না)
+        const overCap = currentNet > 70200;
+        if (overCap) { fullRefixedNet = currentNet; totalIncreaseAmount = 0; }
+
+        if (phase === 'p1') {
+            // সংশোধন: ১ম ধাপে বৃদ্ধির অংশ — ২০,০০০ টাকা পর্যন্ত নিট পেনশনে ৫০%, ২০,০০১ বা তার বেশিতে ৪০% (অনুচ্ছেদ ১(৩)(ঙ))
+            let phase1Factor = (currentNet <= 20000) ? 0.50 : 0.40;
+            netMonthlyPension = currentNet + (totalIncreaseAmount * phase1Factor);
+        } else if (phase === 'p2') {
+            let phaseFactor = (currentNet <= 20000) ? 0.75 : 0.70;
+            netMonthlyPension = currentNet + (totalIncreaseAmount * phaseFactor);
+        } else {
+            netMonthlyPension = fullRefixedNet;
+        }
+
+        document.getElementById('labelNetMonthly').innerText = overCap
+            ? "বিদ্যমান নিট পেনশন (৭০,২০০ টাকার বেশি: অপরিবর্তিত)"
+            : "পুনর্নির্ধারিত নিট পেনশন (" + reFixRateText + " বৃদ্ধি)";
+    }
+
+    let medicalAllowance = 1500;
+    let festivalAllowance = netMonthlyPension;
+    let newYearAllowance = 0;
+    let newYearLabelText = "বাংলা নববর্ষ ভাতা (২০%)";
+
+    if (allowanceType === 'current') {
+        medicalAllowance = (age >= 65) ? 2500 : 1500;
+        // সংশোধন: গেজেট অনুচ্ছেদ ১(৩) — উৎসব ও নববর্ষ ভাতা ৩০ জুন ২০২৬-এর অঙ্কে ৩১ ডিসেম্বর ২০২৭ পর্যন্ত
+        festivalAllowance = frozenNetJune2026;
+        newYearAllowance = frozenNetJune2026 * 0.20;
+        newYearLabelText = "বাংলা নববর্ষ ভাতা (২০%, ৩০ জুন ২০২৬-এর অঙ্কে)";
+    } else {
+        if (age <= 50) {
+            medicalAllowance = 3000;
+        } else if (age <= 60) {
+            medicalAllowance = 4000;
+        } else if (age <= 70) {
+            medicalAllowance = 5000;
+        } else {
+            medicalAllowance = 6000;
+        }
+        newYearAllowance = netMonthlyPension * 0.15;
+        newYearLabelText = "বাংলা নববর্ষ ভাতা (১৫%)";
+    }
+
+    let totalMonthlyPensionWithMedical = netMonthlyPension + medicalAllowance;
+    let annualTotalPensionIncome = (totalMonthlyPensionWithMedical * 12) + (festivalAllowance * 2) + newYearAllowance;
+
+    if (pensionerType === 'new') {
+        document.getElementById('resSlabText').innerText = percentage.toLocaleString('bn-BD');
+        document.getElementById('resGrossPension').innerText = '৳ ' + grossPension.toLocaleString('bn-BD', {maximumFractionDigits: 2});
+        document.getElementById('resGratuity').innerText = '৳ ' + gratuityAmount.toLocaleString('bn-BD', {maximumFractionDigits: 2});
+        document.getElementById('resLeaveCash').innerText = '৳ ' + leaveEncashment.toLocaleString('bn-BD', {maximumFractionDigits: 2});
+        document.getElementById('resLumpSumTotal').innerText = '৳ ' + totalLumpSum.toLocaleString('bn-BD', {maximumFractionDigits: 2});
+    }
+
+    document.getElementById('resMonthlyTotal').innerText = '৳ ' + totalMonthlyPensionWithMedical.toLocaleString('bn-BD', {maximumFractionDigits: 2});
+    document.getElementById('resNetMonthly').innerText = '৳ ' + netMonthlyPension.toLocaleString('bn-BD', {maximumFractionDigits: 2});
+    document.getElementById('resMedical').innerText = '৳ ' + medicalAllowance.toLocaleString('bn-BD');
+    document.getElementById('resFestival').innerText = '৳ ' + festivalAllowance.toLocaleString('bn-BD', {maximumFractionDigits: 2});
+    document.getElementById('resFestival').previousElementSibling.innerText =
+        "উৎসব ভাতা (প্রতিটি, বছরে ২টি" + (allowanceType === 'current' ? ", ৩০ জুন ২০২৬-এর অঙ্কে)" : ")");
+    document.getElementById('resNewYearLabel').innerText = newYearLabelText;
+    document.getElementById('resNewYear').innerText = '৳ ' + newYearAllowance.toLocaleString('bn-BD', {maximumFractionDigits: 2});
+    document.getElementById('resAnnualTotal').innerText = '৳ ' + annualTotalPensionIncome.toLocaleString('bn-BD', {maximumFractionDigits: 2});
+
+    document.getElementById('resultContainer').style.display = 'block';
+    document.getElementById('resultContainer').scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+<script>
+/* ============================================================
+   রিসেট ও প্রিন্ট — নতুন যোগ করা অংশ (উপরের হিসাবের কোড অপরিবর্তিত)
+   ============================================================ */
+(function () {
+  const $ = id => document.getElementById(id);
+  const BN = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+  const MONTHS = ['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+  const toBn = v => String(v).replace(/\d/g, d => BN[Number(d)]);
+  const esc = v => String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+  // শুরুর লেখাগুলো মনে রাখা (রিসেটে ফেরানোর জন্য)
+  const INITIAL = {
+    labelNet: $('labelNetMonthly').textContent,
+    newYear: $('resNewYearLabel').textContent,
+    slab: $('resSlabText').textContent,
+    fest: $('resFestival').previousElementSibling.textContent
+  };
+  const RESULT_IDS = ['resMonthlyTotal','resLumpSumTotal','resGrossPension','resNetMonthly','resMedical',
+                      'resGratuity','resLeaveCash','resFestival','resNewYear','resAnnualTotal'];
+  let lastCalc = null;   // সর্বশেষ সফল হিসাবের ইনপুট (প্রিন্টে ঠিক সেটাই ছাপা হবে)
+
+  // সব ইনপুট থেকে (দৃশ্যমান ঘর) লেবেল-মান জোড়া তোলা
+  function readInputs() {
+    const out = [];
+    document.querySelectorAll('.app-wrapper .input-group').forEach(g => {
+      if (g.offsetParent === null) return;                       // লুকানো ঘর বাদ
+      const lab = g.querySelector('label'); const ctl = g.querySelector('input,select');
+      if (!lab || !ctl) return;
+      const clone = lab.cloneNode(true); clone.querySelectorAll('small').forEach(s => s.remove());
+      let val;
+      if (ctl.tagName === 'SELECT') val = ctl.options[ctl.selectedIndex].text;
+      else val = (ctl.value === '' ? '—' : Number(ctl.value).toLocaleString('bn-BD'));
+      out.push([clone.textContent.trim(), val]);
+    });
+    return out;
+  }
+
+  // "হিসাব করুন"-এর মূল ফাংশন অক্ষত; শুধু সফল হলে ইনপুট মনে রাখা হয়
+  const originalCalc = window.executeCalculation;
+  window.executeCalculation = function () {
+    const before = readInputs();
+    let failed = false;
+    const realAlert = window.alert;
+    window.alert = function (m) { failed = true; return realAlert.call(window, m); };  // যাচাই ব্যর্থ হলে মূল কোড alert দেয়
+    try { originalCalc(); } finally { window.alert = realAlert; }
+    if (!failed) lastCalc = before;
+  };
+
+  // ---------- রিসেট ----------
+  window.resetCalculator = function () {
+    document.querySelectorAll('.app-wrapper input').forEach(i => { i.value = ''; });
+    document.querySelectorAll('.app-wrapper select').forEach(s => { s.selectedIndex = 0; });
+    togglePensionerFields();                                    // মূল ফাংশন: ধরন অনুযায়ী ঘর সাজানো
+    RESULT_IDS.forEach(id => { $(id).textContent = '৳ ০'; });
+    $('labelNetMonthly').textContent = INITIAL.labelNet;
+    $('resNewYearLabel').textContent = INITIAL.newYear;
+    $('resSlabText').textContent = INITIAL.slab;
+    $('resFestival').previousElementSibling.textContent = INITIAL.fest;
+    $('resultContainer').style.display = 'none';
+    $('printSheet').innerHTML = '';
+    lastCalc = null;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // ---------- A4 প্রিন্ট ----------
+  function buildPrintSheet() {
+    const d = new Date();
+    const dateText = toBn(d.getDate()) + ' ' + MONTHS[d.getMonth()] + ' ' + toBn(d.getFullYear());
+    const typeText = lastCalc && lastCalc[0] ? lastCalc[0][1] : '';
+    let html = '';
+    html += '<div class="prep"><b>প্রস্তুতকারক: মোঃ মানিক</b><br>গাড়ি চালক, রাজশাহী মেডিকেল কলেজ হাসপাতাল, রাজশাহী।<br>মোবাইল: ০১৭২৯-৮১৫২৯১</div>';
+    html += '<h2>সরকারি পেনশন হিসাব</h2>';
+    html += '<p class="sum">' + esc(typeText) + ' &nbsp;|&nbsp; হিসাবের তারিখ: ' + esc(dateText) + '</p>';
+
+    html += '<h3>ইনপুট তথ্য</h3><table>';
+    (lastCalc || []).slice(1).forEach(r => { html += '<tr><td>' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td></tr>'; });
+    html += '</table>';
+
+    html += '<h3>হিসাবের ফলাফল</h3><div class="bigs">';
+    document.querySelectorAll('#resultContainer .highlight-banner').forEach(b => {
+      if (b.offsetParent === null) return;
+      html += '<div class="big' + (b.id === 'lumpSumBanner' ? ' lump' : '') + '"><small>' + esc(b.querySelector('span').textContent.trim()) + '</small><b>' + esc(b.querySelector('strong').textContent.trim()) + '</b></div>';
+    });
+    html += '</div><table>';
+    document.querySelectorAll('#resultContainer .detail-row').forEach(r => {
+      if (r.offsetParent === null) return;
+      const cells = r.children;
+      html += '<tr' + (r.classList.contains('row-total') ? ' class="tot"' : '') + '><td>' + esc(cells[0].textContent.trim()) + '</td><td>' + esc(cells[cells.length - 1].textContent.trim()) + '</td></tr>';
+    });
+    html += '</table>';
+    html += '<p class="foot">এটি সহায়ক হিসাব মাত্র, অফিসিয়াল পেনশন নির্ধারণ নয়। চূড়ান্ত পেনশন সংশ্লিষ্ট হিসাব রক্ষণ কার্যালয়/মঞ্জুরকারী কর্তৃপক্ষের নির্ধারণ অনুযায়ী হবে।<br>হিসাবপাতা — বাংলা স্মার্ট টুলস</p>';
+    $('printSheet').innerHTML = html;
+  }
+
+  window.printResult = function () {
+    if ($('resultContainer').style.display !== 'block' || !lastCalc) {
+      alert('আগে "হিসাব করুন" বাটন চেপে ফলাফল দেখুন, তারপর প্রিন্ট করুন।');
+      return;
+    }
+    buildPrintSheet();
+    window.print();
+  };
+})();
+</script>
+</body>
+</html>
